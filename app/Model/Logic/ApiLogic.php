@@ -130,16 +130,16 @@ class ApiLogic
         ];
 
         //获取redis 设置的广告
-        $sGroupAdvertisesKey= "short_group_advertises_{$iChatId}"; //群广告的key
+        $sGroupAdvertisesKey= "group_advertises_{$bot_id}"; //群广告的key
 
         //设置群广告
-//        Redis::hSet($sGroupAdvertisesKey,"2",json_encode(['text' =>  "广告2", 'url' => "https://www.baidu.com12/"]));
-//        Redis::hSet($sGroupAdvertisesKey,"1",json_encode(['text' =>  "广告", 'url' => "https://www.baidu.com/"]));
-//        Redis::hSet($sGroupAdvertisesKey,"3",json_encode(['text' =>  "广告3", 'url' => "https://www.baidu.com/"]));
-        $aGroupAdvertises = Redis::hGetAll($sGroupAdvertisesKey);
+//        Redis::hSet($sGroupAdvertisesKey,"$iChatId",json_encode(2=>['text' =>  "广告2", 'url' => "https://www.baidu.com12/"],1=>['text' =>  "广告", 'url' => "https://www.baidu.com/"]));
+//        Redis::hSet($sGroupAdvertisesKey,"$iChatId",json_encode([1=>['text' =>  "广告3", 'url' => "https://www.baidu.com/"],2=>['text' =>  "广告", 'url' => "https://www.baidu.com/"]]));
+        $aGroupAdvertises = Redis::hGet($sGroupAdvertisesKey,"$chat_id");
+        $aGroupAdvertises = json_decode($aGroupAdvertises,true);
         if (!empty($aGroupAdvertises)){
             foreach ($aGroupAdvertises as $k => $v){
-                $aInlineKeyboard[] = [json_decode($v, true)];
+                $aInlineKeyboard[] = [$v];
             }
         }
 
@@ -207,15 +207,16 @@ class ApiLogic
         ];
 
         //获取redis 设置的广告
-        $sGroupAdvertisesKey= "long_group_advertises_{$bot_id}"; //群广告的key
+        $sGroupAdvertisesKey= "group_advertises_{$bot_id}"; //群广告的key
 
         //设置群广告
 //        Redis::hSet($sGroupAdvertisesKey,"$iChatId",json_encode(2=>['text' =>  "广告2", 'url' => "https://www.baidu.com12/"],1=>['text' =>  "广告", 'url' => "https://www.baidu.com/"]));
 //        Redis::hSet($sGroupAdvertisesKey,"$iChatId",json_encode([1=>['text' =>  "广告3", 'url' => "https://www.baidu.com/"],2=>['text' =>  "广告", 'url' => "https://www.baidu.com/"]]));
-        $aGroupAdvertises = Redis::hGet($sGroupAdvertisesKey,"$iChatId");
+        $aGroupAdvertises = Redis::hGet($sGroupAdvertisesKey,"$chat_id");
+        $aGroupAdvertises = json_decode($aGroupAdvertises,true);
         if (!empty($aGroupAdvertises)){
             foreach ($aGroupAdvertises as $k => $v){
-                $aInlineKeyboard[] = [json_decode($v, true)];
+                $aInlineKeyboard[] = [$v];
             }
         }
 
@@ -231,6 +232,7 @@ class ApiLogic
             'inline_keyboard' =>  $aInlineKeyboard
         ];
 
+        var_dump($keyboard);
         $markup = json_encode($keyboard);
         $content = [
             'chat_id' => $chat_id,
@@ -304,69 +306,6 @@ class ApiLogic
         Redis::sAdd($aKcfjKey,"$chat_id");
 
 
-
-
-//        //查询出所有的短视频链接
-//        $vides = $this->VideoData->getVideoByType(1);
-//        $count = count($vides);
-//        $iChatId = abs($chat_id);
-//        $sVideRedisKey= "short_video_vide_{$iChatId}";
-//        $chatNum = Redis::IncrBy($sVideRedisKey,1);
-//        if( $count <= $chatNum){
-//            Redis::del($sVideRedisKey);
-//            $chatNum = 0;
-//        }
-//        $video = $vides[$chatNum]->toArray();
-//        //调用接口
-//
-//        $aInlineKeyboard = [
-//            [['text' =>  "长视频", 'callback_data' => 'long_video'],['text' =>  "短视频", 'callback_data' => 'short_video']]
-//        ];
-//
-//        //获取redis 设置的广告
-//        $sGroupAdvertisesKey= "short_group_advertises_{$bot_id}"; //群广告的key
-//        //设置群广告
-//        $aGroupAdvertises = Redis::hGet($sGroupAdvertisesKey,"$chat_id");
-//
-//        if (!empty($aGroupAdvertises)){
-//            $aGroupAdvertises = json_decode($aGroupAdvertises,true);
-//        }
-//
-//        if (!empty($aGroupAdvertises)){
-//            foreach ($aGroupAdvertises as $k => $v){
-//
-//                $aInlineKeyboard[] = [$v];
-//            }
-//        }
-//
-//        //随机自己广告
-//        //获取所有广告列表
-//        $aAdvertises = $this->AdvertiseData->getAdvertises();
-//        $iSjKey = rand(0,count($aAdvertises)-1);
-//        $aInlineKeyboard[] = [[
-//            'text' => $aAdvertises[$iSjKey]['name'],
-//            'url' => $aAdvertises[$iSjKey]['link'],
-//        ]];
-//        $keyboard = [
-//            'inline_keyboard' =>  $aInlineKeyboard
-//        ];
-//
-//        $markup = json_encode($keyboard);
-//
-//        $content = [
-//            'chat_id' => $chat_id,
-//            'reply_markup' => $markup,
-//            'video'=> $video['link'],
-//            'caption' => $video['describe'],
-//            'disable_notification' => true
-//        ];
-//
-//        //获取机器人的key
-//        $aBotInfo = $this->BotData->getBot($bot_id);
-//        $sUrl = "https://api.telegram.org/bot{$aBotInfo['propertyKey']}/sendVideo";
-//
-//        //发送消息
-//        $reData = $this->curlPost($sUrl, $content);
     }
 
 
@@ -407,7 +346,7 @@ class ApiLogic
         $chat_id = $post['message']['chat']['id'];
         $iChatId = abs($chat_id);
         //获取redis 设置的广告
-        $sGroupAdvertisesKey= "short_group_advertises_{$bot_id}"; //群广告的key
+        $sGroupAdvertisesKey= "group_advertises_{$bot_id}"; //群广告的key
 
         $postMessage = explode(" ",$post['message']['text']);
         //读取广告
@@ -421,8 +360,6 @@ class ApiLogic
             'url' => $postMessage[2]
         ];
 
-        var_dump($sGroupAdvertisesKey,$iChatId);
-        var_dump($aGroupAdvertises);
         Redis::hSet($sGroupAdvertisesKey,"$chat_id",json_encode($aGroupAdvertises));
 
         //覆盖广告

@@ -14,3 +14,6 @@ temp/
 .DS_Store
 public/devtool/
 /bin/swoftcli.phar
+app/bean.php
+config/base.php
+web/dist/config.js

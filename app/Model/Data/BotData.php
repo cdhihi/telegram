@@ -72,12 +72,11 @@ class BotData
     public function updateBot(int $id, array $BotInfo)
     {
         //如果机器人创建成功去修改地址
-        if ($id){
+        if ($id && !empty($BotInfo['property_key'])){
             //获取回调地址
             $callbackApi = config('telegram_callback_api', '127.0.0.1');
             $callbackApi = $callbackApi."/auth-service/api/{$id}";
             $telegramApi = "https://api.telegram.org/bot{$BotInfo['property_key']}/setWebhook";
-            var_dump("callback_url",$callbackApi);
             $requst = ReturnHelper::curlPost($telegramApi,['url'=>"$callbackApi"]);
         }
 

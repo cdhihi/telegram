@@ -71,6 +71,19 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
+                <v-radio-group v-model="Video.type">
+                  <v-radio
+                    :label="`短视频`"
+                    :value="1"
+                  ></v-radio>
+                  <v-radio
+                    :label="`长视频`"
+                    :value="2"
+                  ></v-radio>
+
+                </v-radio-group>
+              </v-flex>
+              <v-flex xs12>
                 <v-text-field
                   :label="$t('App.videoLink') + '*'"
                   ref="link"
@@ -88,6 +101,7 @@
                   :rules="[rules.required]"
                 ></v-textarea>
               </v-flex>
+
             </v-layout>
           </v-container>
           <small>{{ $t("Sys.requireMsg") }}</small>
@@ -122,6 +136,7 @@ export default {
       Video: {
         name: "",
         link: "",
+        type: "",
       },
       addUser: {
 

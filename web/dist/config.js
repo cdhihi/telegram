@@ -1,5 +1,5 @@
 window.api = {
     baseUri: '/auth-service/',
-    serverHost: 'http://192.168.80.132',
+    serverHost: 'https://api.vxvz11.com',
     serverPort: 8004
 }

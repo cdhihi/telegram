@@ -467,6 +467,7 @@ class VideoController
             "name",
             "link",
             "describe",
+            "type",
         ];
         $VideoInfo = [];
         foreach ($fields as $field) {
@@ -474,11 +475,10 @@ class VideoController
         }
 
         $ret = $this->videoData->updateVideo($id, $VideoInfo);
-        if ($ret) {
-            return ReturnHelper::format('success', 200, $ret);
-        } else {
-            throw new ApiException('user info error', 400);
+        if ($ret === false) {
+            return ReturnHelper::format('editVideo status error', 400, $ret);
         }
+        return ReturnHelper::format('success', 200, $ret);
     }
 
     /**
