@@ -57,8 +57,8 @@ export default {
     drawer: null,
     primaryDrawerType: false,
     loginForm: {
-      identity: "test",
-      credential: "00000000"
+      identity: "",
+      credential: ""
     },
     loading: false
   }),

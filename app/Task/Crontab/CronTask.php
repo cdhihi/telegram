@@ -39,7 +39,7 @@ class CronTask
 
 
     /**
-     * @Cron("* * * * * *")
+     * @Cron("5 * * * * *")
      */
     public function kcTask()
     {
